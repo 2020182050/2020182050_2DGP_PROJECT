@@ -1,33 +1,7 @@
 from pico2d import *
+from TileMap1 import *
+from BgMap1 import *
 import game_framework
-
-class Grass:
-    def __init__(self):
-        self.image = load_image('img/grass.png')
-
-    def draw(self):
-        self.image.draw(400, 30)
-
-class BgMap1:
-    def __init__(self):
-        self.bg_image = load_image('img/1484.jpg')
-
-    def draw(self):
-        self.bg_image.draw(400, 300,800,600)
-
-class TileMap1:
-    def __init__(self):
-        self.tile_image = load_image('img/42_tilemap.png')
-        self.size = 42
-        self.x = 21
-        self.y = 21
-
-    def draw(self):
-        self.tile_image.clip_draw(self.size*12,self.size*2,self.size,self.size,self.x,self.y)
-
-class Koog:
-    def __init__(self):
-        self.image = load_image('img/Koog_sprite.png')
 
 def handle_events():
     global running
