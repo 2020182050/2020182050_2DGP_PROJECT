@@ -1,39 +1,48 @@
 from pico2d import *
+import game_framework
+import game_world 
+
 from TileMap1 import *
 from BgMap1 import *
-import game_framework
+from Hero import*
+
+hero = None
 
 def handle_events():
-    global running
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
-        elif event.type == SDL_KEYDOWN :
-            if event.key == SDLK_ESCAPE:
-                game_framework.quit()
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
+            game_framework.quit()
+        else:
+            hero.handle_event(event)
 
-bgmap1 = None
-tilemap1 = []
+
 
 def enter():
-    global tilemap1,bgmap1
-    tilemap1 = [TileMap1() for i in range(60)]
-    bgmap1 = BgMap1()
+    global hero
+    hero = Hero()
+    tilemap = [TileMap1(i) for i in range(120)]
+    bgmap = BgMap1()
+    game_world.add_object(hero,2)
+    game_world.add_objects(tilemap, 1)
+    game_world.add_object(bgmap, 0)
 
 def exit():
-    global tilemap1,bgmap1
-    del tilemap1,bgmap1
-
-def update():
     pass
 
+def update():
+    for game_object in game_world.all_objects():
+        game_object.update()
+
+def draw_world():
+    for game_object in game_world.all_objects():
+        game_object.draw()
+    
 def draw():
     clear_canvas()
-    bgmap1.draw()
-    for i,tile in enumerate(tilemap1):
-        tile.x = i*42 + 21
-        tile.draw()
+    draw_world()
     update_canvas()
 
 def pause():
