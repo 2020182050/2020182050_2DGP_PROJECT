@@ -1,6 +1,18 @@
 from pico2d import *
 from Global_v import*
-import game_world
+import game_framework
+
+# Hero Run Speed
+PIXEL_PER_METER = 25.0 # 10 pixel 1 m
+RUN_SPEED_KMPH = 20.0 # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# Hero Action Speed
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 2
 
 #1 : 이벤트 정의
 RD, LD, RU, LU = range(4)
@@ -26,15 +38,15 @@ class IDLE:
 
     @staticmethod
     def do(self):
-        self.frame = (self.frame + 1) % 2
-
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
+        
     @staticmethod
     def draw(self):
         #40/65
         #52/59
         #42/55
         #42/55
-        self.image.clip_draw(self.frame*42, 0, 42, 55, self.x, self.y)
+        self.image.clip_draw(int(self.frame)*42, 0, 42, 55, self.x, self.y)
         
 
 
@@ -54,8 +66,8 @@ class RUN:
         pass
 
     def do(self):
-        self.frame = (self.frame + 1) % 2
-        self.x += self.dir
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
+        self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
         self.x = clamp(0, self.x, 800)
 
     def draw(self):
@@ -64,9 +76,9 @@ class RUN:
         #42/55
         #42/55
         if self.dir == -1:
-            self.image.clip_draw(self.frame*42, 55, 42, 55, self.x, self.y)
+            self.image.clip_draw(int(self.frame)*42, 55, 42, 55, self.x, self.y)
         elif self.dir == 1:
-            self.image.clip_draw(84 + self.frame*42, 55, 42, 55, self.x, self.y)
+            self.image.clip_draw(84 + int(self.frame)*42, 55, 42, 55, self.x, self.y)
 
 #3. 상태 변환 구현
 
@@ -76,7 +88,6 @@ next_state = {
 }
 
 class Hero:
-
     def __init__(self):
         self.x, self.y = 800 // 2, 111
         self.frame = 0
