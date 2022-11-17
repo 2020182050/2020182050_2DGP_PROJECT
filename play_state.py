@@ -7,6 +7,7 @@ from BgMap1 import *
 from Hero import*
 
 hero = None
+tilemaps = []
 
 def handle_events():
     events = get_events()
@@ -18,23 +19,31 @@ def handle_events():
         else:
             hero.handle_event(event)
 
-
-
 def enter():
     global hero
     hero = Hero()
-    tilemap = [TileMap1(i) for i in range(120)]
+    tilemaps = [TileMap1(i) for i in range(120)]
     bgmap = BgMap1()
     game_world.add_object(hero,2)
-    game_world.add_objects(tilemap, 1)
+    game_world.add_objects(tilemaps, 1)
     game_world.add_object(bgmap, 0)
+    game_world.add_collision_pairs(hero, tilemaps, 'hero:tilemap')
 
 def exit():
-    pass
+    game_world.clear()
 
 def update():
     for game_object in game_world.all_objects():
         game_object.update()
+    
+    for a, b, group in game_world.all_collision_pairs():
+        if collide(a,b):
+            print('COLLISION ', group)
+            a.handle_collision(b, group)
+            b.handle_collision(a, group)
+    
+    #for game_object in game_world.all_objects():
+    #    game_object.update()
 
 def draw_world():
     for game_object in game_world.all_objects():
@@ -50,3 +59,24 @@ def pause():
 
 def resume():
     pass
+
+def collide(a,b):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+
+    if left_a > right_b: return False
+    if right_a < left_b: return False
+    if top_a < bottom_b: return False
+    if bottom_a > top_b: return False
+
+    return True
+
+def test_self():
+    import play_state
+
+    pico2d.open_canvas()
+    game_framework.run(play_state)
+    pico2d.clear_canvas()
+
+if __name__ == '__main__':
+    test_self()
