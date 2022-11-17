@@ -124,6 +124,9 @@ def run(start_state):
         stack[-1].exit()
         stack.pop()
 
+def init_frame_time_sum():
+    global frame_time_sum
+    frame_time_sum = 0
 
 def test_game_framework():
     start_state = TestGameState('StartState')
