@@ -52,11 +52,8 @@ class IDLE:
 
     @staticmethod
     def draw(self):
-        #40/65
-        #52/59
-        #42/55
-        #42/55
-        self.image.clip_draw(int(self.frame)*42, 0, 42, 54, self.x, self.y)
+        #42/56
+        self.image.clip_draw(int(self.frame)*42, 0, 42, 56, self.x, self.y)
         
 
 
@@ -82,14 +79,11 @@ class RUN:
         self.y += (GRAVITY_PPSS + HERO_FLY_SPEED_PPSS) * game_framework.frame_time * game_framework.frame_time_sum / 2.0
 
     def draw(self):
-        #40/65
-        #52/59
-        #42/55
-        #42/55
+        #42/56
         if self.dir == -1:
-            self.image.clip_draw(int(self.frame)*42, 55, 42, 55, self.x, self.y)
+            self.image.clip_draw(int(self.frame)*42, 56, 42, 56, self.x, self.y)
         elif self.dir == 1:
-            self.image.clip_draw(84 + int(self.frame)*42, 55, 42, 55, self.x, self.y)
+            self.image.clip_composite_draw(int(self.frame)*42, 56, 42, 56, 0, 'h', self.x, self.y, 39, 55)
 
 class FLY:
     @staticmethod
@@ -106,6 +100,8 @@ class FLY:
         global HERO_FLY_SPEED_MPSS
         HERO_FLY_SPEED_MPSS = HERO_FLY_BASIC_SPEED_MPSS
         update_speed()
+        if event_name[event] == 'UD':
+            game_framework.init_frame_time_sum()
 
     @staticmethod
     def exit(self, event):
@@ -124,15 +120,12 @@ class FLY:
 
     @staticmethod
     def draw(self):
-        #40/65
-        #52/59
-        #42/55
-        #42/55
+        #42/56
         self.fire.clip_composite_draw(0, 0, 78, 41,
                             -3.141592 / 2, '', self.x - 7, self.y - 27, 24, 12)
         self.fire.clip_composite_draw(0, 0, 78, 41,
                             -3.141592 / 2, '', self.x + 7, self.y - 27, 24, 12)
-        self.image.clip_draw(int(self.frame)*42, 0, 42, 54, self.x, self.y)
+        self.image.clip_draw(int(self.frame)*42, 0, 42, 56, self.x, self.y)
         
 
 #3. 상태 변환 구현
@@ -148,7 +141,7 @@ class Hero:
         self.x, self.y = 800 // 2, 600
         self.frame = 0
         self.dir = 0
-        self.image = load_image('img/Koog_sprite.png')
+        self.image = load_image('img/Koog.png')
         self.fire = load_image('img/808.png')
         
         self.timer = 100
