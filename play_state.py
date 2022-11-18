@@ -5,9 +5,11 @@ import game_world
 from TileMap1 import *
 from BgMap1 import *
 from Hero import*
+from Mob import*
 
 hero = None
 tilemaps = []
+mobs = []
 
 def handle_events():
     events = get_events()
@@ -23,11 +25,15 @@ def enter():
     global hero
     hero = Hero()
     tilemaps = [TileMap1(i) for i in range(120)]
+    mobs = [Mob(0, 300 + 100 * i, 111) for i in range(2)]
     bgmap = BgMap1()
     game_world.add_object(hero,2)
+    game_world.add_objects(mobs, 2)
     game_world.add_objects(tilemaps, 1)
     game_world.add_object(bgmap, 0)
+    game_world.add_collision_pairs(hero, mobs, 'hero:mob')
     game_world.add_collision_pairs(hero, tilemaps, 'hero:tilemap')
+    game_world.add_collision_pairs(mobs, tilemaps, 'mob:tilemap')
 
 def exit():
     game_world.clear()

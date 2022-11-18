@@ -15,6 +15,13 @@ HERO_TIME_PER_ACTION = 0.5
 HERO_ACTION_PER_TIME = 1.0 / HERO_TIME_PER_ACTION
 HERO_FRAMES_PER_ACTION = 2
 
+# Hero Action Time Interval
+HERO_ACTION_TIME_INTERVAL = 0.0
+
+def init_time_interval():
+    global HERO_ACTION_TIME_INTERVAL
+    HERO_ACTION_TIME_INTERVAL = 0.0
+
 def update_speed():
     global HERO_RUN_SPEED_MPS, HERO_RUN_SPEED_PPS
     HERO_RUN_SPEED_PPS = (HERO_RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -47,8 +54,8 @@ class IDLE:
 
     @staticmethod
     def do(self):
-        self.frame = (self.frame + HERO_FRAMES_PER_ACTION * HERO_ACTION_PER_TIME * game_framework.frame_time) % 2
-        self.y += (GRAVITY_PPSS + HERO_FLY_SPEED_PPSS) * game_framework.frame_time * game_framework.frame_time_sum / 2.0
+        self.frame = (self.frame + HERO_FRAMES_PER_ACTION * HERO_ACTION_PER_TIME * game_framework.frame_time) % HERO_FRAMES_PER_ACTION
+        self.y += (GRAVITY_PPSS + HERO_FLY_SPEED_PPSS) * game_framework.frame_time * HERO_ACTION_TIME_INTERVAL / 2.0
 
     @staticmethod
     def draw(self):
@@ -73,10 +80,10 @@ class RUN:
         pass
 
     def do(self):
-        self.frame = (self.frame + HERO_FRAMES_PER_ACTION * HERO_ACTION_PER_TIME * game_framework.frame_time) % 2
+        self.frame = (self.frame + HERO_FRAMES_PER_ACTION * HERO_ACTION_PER_TIME * game_framework.frame_time) % HERO_FRAMES_PER_ACTION
         self.x += self.dir * HERO_RUN_SPEED_PPS * game_framework.frame_time
         self.x = clamp(0, self.x, 800)
-        self.y += (GRAVITY_PPSS + HERO_FLY_SPEED_PPSS) * game_framework.frame_time * game_framework.frame_time_sum / 2.0
+        self.y += (GRAVITY_PPSS + HERO_FLY_SPEED_PPSS) * game_framework.frame_time * HERO_ACTION_TIME_INTERVAL / 2.0
 
     def draw(self):
         #42/56
@@ -101,7 +108,7 @@ class FLY:
         HERO_FLY_SPEED_MPSS = HERO_FLY_BASIC_SPEED_MPSS
         update_speed()
         if event_name[event] == 'UD':
-            game_framework.init_frame_time_sum()
+            init_time_interval()
 
     @staticmethod
     def exit(self, event):
@@ -109,14 +116,14 @@ class FLY:
         HERO_FLY_SPEED_MPSS = 0
         update_speed()
         if event_name[event] == 'UU':
-            game_framework.init_frame_time_sum()
+            init_time_interval()
 
     @staticmethod
     def do(self):
         self.frame = 0
         self.x += self.dir * HERO_RUN_SPEED_PPS * game_framework.frame_time
         self.x = clamp(0, self.x, 800)
-        self.y += 1 + (GRAVITY_PPSS + HERO_FLY_SPEED_PPSS) * game_framework.frame_time * game_framework.frame_time_sum / 2.0
+        self.y += 1 + (GRAVITY_PPSS + HERO_FLY_SPEED_PPSS) * game_framework.frame_time * HERO_ACTION_TIME_INTERVAL / 2.0
 
     @staticmethod
     def draw(self):
@@ -151,6 +158,8 @@ class Hero:
         self.cur_state.enter(self, None)
 
     def update(self):
+        global HERO_ACTION_TIME_INTERVAL
+        HERO_ACTION_TIME_INTERVAL += game_framework.frame_time
         self.cur_state.do(self)
 
         if self.event_que:
@@ -188,7 +197,7 @@ class Hero:
             self.add_event(key_event)
     
     def handle_collision(self, other, group):
-        #print(other, " - ", group)
+        print(other, " - ", group)
         left_self, bottom_self, right_self, top_self = self.get_bb()
         left_other, bottom_other, right_other, top_other = other.get_bb()
         if group == 'hero:tilemap':
@@ -196,4 +205,6 @@ class Hero:
                 global HERO_FLY_SPEED_MPSS
                 HERO_FLY_SPEED_MPSS = -GRAVITY_MPSS
                 update_speed()
-                game_framework.init_frame_time_sum()
+                init_time_interval()
+        elif group == 'hero:mob':
+            pass

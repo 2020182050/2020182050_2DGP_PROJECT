@@ -31,13 +31,17 @@ def add_collision_pairs(a,b, group):
 
     if  group not in collision_group:
         print('Add new group ', group)
-        collision_group[group] = [ [a], [] ] # list of list : list pair
+        collision_group[group] = [ [], [] ] # list of list : list pair
 
-    if a:
-        if type(b) is list:
-            collision_group[group][1] += b
-        else:
-            collision_group[group][1].append(b)
+    if type(a) is list:
+        collision_group[group][0] += a
+    else:
+        collision_group[group][0].append(a)
+
+    if type(b) is list:
+        collision_group[group][1] += b
+    else:
+        collision_group[group][1].append(b)
 
 def all_collision_pairs():
     for group, pairs in collision_group.items():

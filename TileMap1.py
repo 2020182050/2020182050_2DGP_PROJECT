@@ -24,5 +24,8 @@ class TileMap1:
     def get_bb(self):
         return self.x - 21, self.y - 21, self.x + 21, self.y + 21
 
+    def set_time_interval(self):
+        pass
+
     def handle_collision(self, other, group):
         pass
