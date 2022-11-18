@@ -49,9 +49,9 @@ class IDLE:
     def draw(self):
         #46,44
         if self.dir == 1:
-            self.image.clip_draw(int(self.frame)*46, 44 * self.color, 46, 44, self.x, self.y)
+            self.image.clip_draw(int(self.frame)*46, 44 * self.color * 2, 46, 44, self.x, self.y)
         elif self.dir == -1:
-            self.image.clip_composite_draw(int(self.frame)*46, 44 * self.color, 46, 44, 0, 'h', self.x, self.y, 46, 44)
+            self.image.clip_composite_draw(int(self.frame)*46, 44 * self.color * 2, 46, 44, 0, 'h', self.x, self.y, 46, 44)
 
 
 class DEAD:
@@ -70,7 +70,7 @@ class DEAD:
     @staticmethod
     def draw(self):
         #46,44
-        self.image.clip_draw(int(self.frame)*42, 0, 42, 56, self.x, self.y)
+        self.image.clip_draw(int(self.frame)*46, 44 * self.color * 2, 46, 44, self.x, self.y)
 
 next_state = {
     IDLE:  {HP_0:DEAD},
