@@ -1,4 +1,5 @@
-objects = [[], [], []]
+#0 - bg / 1 - shop, tilemap / 2 - hero, mob / 3 - iv_slot
+objects = [[], [], [], []]
 collision_group = {}
 
 def add_object(o, depth):
@@ -20,6 +21,10 @@ def all_objects():
     for layer in objects:
         for o in layer:
             yield o # 제너레이터, 모든 객체들을 하나씩 넘겨준다.
+
+def get_layer_object(layer):
+    for o in objects[layer]:
+        yield o
 
 def clear():
     for o in all_objects():

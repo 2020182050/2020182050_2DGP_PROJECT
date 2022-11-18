@@ -160,6 +160,7 @@ class Hero:
     def update(self):
         global HERO_ACTION_TIME_INTERVAL
         HERO_ACTION_TIME_INTERVAL += game_framework.frame_time
+        print(f'{HERO_ACTION_TIME_INTERVAL}')
         self.cur_state.do(self)
 
         if self.event_que:
@@ -197,7 +198,7 @@ class Hero:
             self.add_event(key_event)
     
     def handle_collision(self, other, group):
-        print(other, " - ", group)
+        #print(other, " - ", group)
         left_self, bottom_self, right_self, top_self = self.get_bb()
         left_other, bottom_other, right_other, top_other = other.get_bb()
         if group == 'hero:tilemap':

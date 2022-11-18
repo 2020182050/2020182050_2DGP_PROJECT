@@ -1,4 +1,6 @@
 from pico2d import *
+import shop_state
+import inventory_state
 import game_framework
 import game_world 
 
@@ -17,6 +19,8 @@ def handle_events():
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
             game_framework.quit()
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_i):
+            game_framework.push_state(inventory_state)
         else:
             hero.handle_event(event)
 
@@ -45,6 +49,9 @@ def update():
         game_object.update()
     
     for a, b, group in game_world.all_collision_pairs():
+        if group == 'hero:shop':
+            pass
+            #game_framework.push_state(shop_state)
         if collide(a,b):
             #print('COLLISION ', group)
             a.handle_collision(b, group)
@@ -54,8 +61,9 @@ def update():
     #    game_object.update()
 
 def draw_world():
-    for game_object in game_world.all_objects():
-        game_object.draw()
+    for i in range(3):
+        for game_object in game_world.get_layer_object(i):
+            game_object.draw()
     
 def draw():
     clear_canvas()

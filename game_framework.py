@@ -64,7 +64,6 @@ def push_state(state):
     if (len(stack) > 0):
         stack[-1].pause()
     stack.append(state)
-    state.enter()
 
 
 
@@ -116,7 +115,7 @@ def run(start_state):
         frame_time = time.time() - current_time
         frame_rate = 1.0 / frame_time
         current_time += frame_time
-        #print(f'Frame Time: {frame_time}, Frame Rate: {frame_rate}, sum: {frame_time_sum}')
+        print(f'Frame Time: {frame_time}, Frame Rate: {frame_rate}')
 
     # repeatedly delete the top of the stack
     while (len(stack) > 0):
